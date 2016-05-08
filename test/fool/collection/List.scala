@@ -29,9 +29,21 @@ class ListSpec extends FlatSpec with Matchers {
               incr,
                 () => Nil)))
 
-    list should be (0 :: 1 :: 2 :: Nil)
-    list should be (0 :: 1 :: 2 :: Nil)
-    index should be (3)
+    list should    be (0 :: 1 :: 2 :: Nil)
+    list should    be (0 :: 1 :: 2 :: Nil)
+    list shouldNot be (1 :: 2 :: 3 :: Nil)
+    list shouldNot be (Nil)
+    index should   be (3)
+  }
+
+  it should "have the correct `toString`" in {
+    (0 :: 1 :: Nil).toString  should be ("List(0, ?)")
+    (Nil: List[Int]).toString should be ("Nil")
+  }
+
+  it should "have correct isEmpty" in {
+    (0 :: 1 :: Nil).isEmpty  should be (false)
+    (Nil: List[Int]).isEmpty should be (true)
   }
 
   it should "support pattern matching" in {

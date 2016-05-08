@@ -20,7 +20,7 @@ object FoolBuild extends Build {
     )
   }
 
-  lazy val dotty = project.in(file(".")).
+  lazy val fool = project.in(file(".")).
     settings(
       /** Project structure */
       scalaSource in Compile := baseDirectory.value / "src",
