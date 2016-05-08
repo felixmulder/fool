@@ -1,9 +1,12 @@
 import sbt._
 import Keys._
+import scoverage.ScoverageKeys._
 
 object FoolBuild extends Build {
   override def settings: Seq[Setting[_]] = {
     super.settings ++ Seq(
+      // Exclude "predef" from coverage results
+      coverageExcludedFiles := "src/fool/package.scala;",
       scalaVersion in Global := "2.11.8",
       version in Global := "0.1-SNAPSHOT",
       homepage in Global := Some(url("https://github.com/felixmulder/fool")),
