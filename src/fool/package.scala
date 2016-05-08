@@ -3,11 +3,14 @@ package object fool {
   type Any           = scala.Any
   type AnyVal        = scala.AnyVal
   type Boolean       = scala.Boolean
+  type Byte          = scala.Byte
+  type Char          = scala.Char
   type Double        = scala.Double
   type Float         = scala.Float
   type Int           = scala.Int
   type Long          = scala.Long
   type Nothing       = scala.Nothing
+  type Short         = scala.Short
   type String        = java.lang.String
   type Unit          = scala.Unit
 
