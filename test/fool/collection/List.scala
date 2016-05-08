@@ -33,6 +33,7 @@ class ListSpec extends FlatSpec with Matchers {
     list should    be (0 :: 1 :: 2 :: Nil)
     list shouldNot be (1 :: 2 :: 3 :: Nil)
     list shouldNot be (Nil)
+    list shouldNot be ("")
     index should   be (3)
   }
 
@@ -43,6 +44,7 @@ class ListSpec extends FlatSpec with Matchers {
 
   it should "have correct isEmpty" in {
     (0 :: 1 :: Nil).isEmpty  should be (false)
+    (0 :: 1 :: Nil).nonEmpty should be (true)
     (Nil: List[Int]).isEmpty should be (true)
   }
 
@@ -56,13 +58,16 @@ class ListSpec extends FlatSpec with Matchers {
   it should "behave correctly when using List(...).apply(i)" in {
     val list = 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: Nil
 
-    list(0).getOrElse(-1) should be (1)
-    list(1).getOrElse(-1) should be (2)
-    list(2).getOrElse(-1) should be (3)
-    list(3).getOrElse(-1) should be (4)
-    list(4).getOrElse(-1) should be (5)
-    list(5).getOrElse(-1) should be (6)
-    list(6).getOrElse(-1) should be (-1)
+    list(0).getOrElse(-1)   should be (1)
+    list(1).getOrElse(-1)   should be (2)
+    list(2).getOrElse(-1)   should be (3)
+    list(3).getOrElse(-1)   should be (4)
+    list(4).getOrElse(-1)   should be (5)
+    list(5).getOrElse(-1)   should be (6)
+    list(6).getOrElse(-1)   should be (-1)
+    list(-10).getOrElse(-1) should be (-1)
+
+    (Nil: List[Int]).apply(1).getOrElse(-1) should be (-1)
   }
 
   it should "handle `map` correctly" in {
