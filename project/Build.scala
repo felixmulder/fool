@@ -6,7 +6,6 @@ object FoolBuild extends Build {
   override def settings: Seq[Setting[_]] = {
     super.settings ++ Seq(
       // Exclude "predef" from coverage results
-      coverageExcludedFiles := "src/fool/package.scala;",
       scalaVersion in Global := "2.11.8",
       version in Global := "0.1-SNAPSHOT",
       homepage in Global := Some(url("https://github.com/felixmulder/fool")),
@@ -31,6 +30,7 @@ object FoolBuild extends Build {
       scalaSource in Test := baseDirectory.value / "test",
       javaSource in Test := baseDirectory.value / "test",
       resourceDirectory in Compile := baseDirectory.value / "resources",
+      //coverageExcludedFiles in Global := "src/fool/package.scala", //FIXME, not working
 
       libraryDependencies ++= Seq(
         "org.scalatest" %% "scalatest" % "2.2.6" % "test"

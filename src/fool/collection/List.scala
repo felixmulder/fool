@@ -82,4 +82,6 @@ final case object Nil extends List[Nothing] {
   def isEmpty = true
 
   override def equalMembers[B >: Nothing](other: Seq[B]) = other eq Nil
+
+  override def apply(index: Int) = None
 }

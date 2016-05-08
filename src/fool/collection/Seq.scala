@@ -18,11 +18,11 @@ trait Seq[+A] { self =>
 
   def equalMembers[B >: A](other: Seq[B]): Boolean
 
-  def apply(index: Int): Option[A] = None
+  def apply(index: Int): Option[A]
 
-  def foldRight[B](start: => B)(f: (A, => B) => B): B = start
+  def foldRight[B](start: => B)(f: (A, => B) => B): B
 
-  def map[B](f: A => B): Seq[B] = Nil
+  def map[B](f: A => B): Seq[B]
 }
 
 trait NonEmptySeq[+A] extends Seq[A] {
