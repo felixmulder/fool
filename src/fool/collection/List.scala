@@ -22,7 +22,7 @@ package collection
 sealed trait List[+A] extends Seq[A] { self =>
   def isEmpty: Boolean
 
-  def ::[B >: A](x: B): List[B] =
+  def ::[B >: A](x: => B): List[B] =
     collection.::(() => x, () => this)
 
   override def equals(other: Any): Boolean =
