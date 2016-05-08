@@ -81,4 +81,12 @@ class ListSpec extends FlatSpec with Matchers {
     list.map(x => x).map(_ * 2).map(_ / 2) should be (0 :: 1 :: 2 :: Nil)
     index should be (3)
   }
+
+  it should "be able to fold values" in {
+    val list = 1 :: 2 :: 3 :: 4 :: Nil
+
+    list.foldRight(0)(_ + _) should be (10)
+
+    (Nil: List[Int]).foldRight(0)(_ * _) should be (0)
+  }
 }

@@ -15,10 +15,19 @@ package object fool {
   type StringContext = scala.StringContext
   val  StringContext = scala.StringContext
 
+  /** Default imports */
+  type List[+A] = fool.collection.List[A]
+  val  Nil      = fool.collection.Nil
+  type ::[+A]   = fool.collection.::[A]
+  val  ::       = fool.collection.::
+
   /** Import println */
   def print(x: Any): Unit   = scala.Predef.print(x)
   def println(x: Any): Unit = scala.Predef.println(x)
   def println(): Unit       = scala.Predef.println()
+
+  /** Identity function returns itself */
+  def identity[A]: A => A = x => x
 
   /* Annotations */
   type inline = scala.inline

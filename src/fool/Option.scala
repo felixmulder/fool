@@ -40,11 +40,21 @@ sealed trait Option[+A] {
 }
 
 object Option {
+
   def apply[A](a: A): Option[A] = if (a != null) Some(a) else None
 
-  //def sequence[A](list: List[Option[A]]): Option[List[A]] = ???
+  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
+    a flatMap (aa => b map (bb => f(aa, bb)))
 
-  //def traverse[A, B](list: List[Option[A]])(f: A => B): Option[List[B]] = ???
+  def sequence[A](list: List[Option[A]]): Option[List[A]] =
+    traverse(list)(identity)
+
+  def traverse[A, B](list: List[A])(f: A => Option[B]): Option[List[B]] =
+    list.foldRight[Option[List[B]]](Some(Nil)){ (elem, acc) =>
+      map2(f(elem), acc){ (h, t) =>
+        collection.::(() => h, () => t)
+      }
+    }
 }
 
 final case class Some[+A](a: A) extends Option[A] {

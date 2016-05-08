@@ -20,6 +20,8 @@ trait Seq[+A] { self =>
 
   def apply(index: Int): Option[A] = None
 
+  def foldRight[B](start: => B)(f: (A, => B) => B): B = start
+
   def map[B](f: A => B): Seq[B] = Nil
 }
 

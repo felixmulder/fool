@@ -44,4 +44,34 @@ class OptionSpec extends FlatSpec with Matchers {
   it should "handle different cases of `flatten`" in {
     Some(Some(1)).flatten should be (Some(1))
   }
+
+
+  it should "handle `map2` correctly" in {
+    val none1 = Option.map2(Some(1), (None: Option[Int])) { _ + _ }
+    val none2 = Option.map2((None: Option[Int]), Some(2)) { _ + _ }
+    val some  = Option.map2(Some(3), Some(7)) { _ + _ }
+
+    none1 should be (None)
+    none2 should be (None)
+    some should be (Some(10))
+  }
+
+  it should "handle sequencing" in {
+    val somes = Option.sequence(Some(1) :: Some(2) :: Some(3) :: Nil).getOrElse(Nil)
+    val nones = Option.sequence(None :: None :: None :: Nil).getOrElse(Nil)
+    val mixed = Option.sequence(Some(1) :: None :: Some(2):: None :: Nil).getOrElse(Nil)
+
+    somes should be (1 :: 2 :: 3 :: Nil)
+    nones should be (Nil)
+    mixed should be (Nil)
+  }
+
+  it should "handle `traverse`" in {
+    val somes = Some(1) :: Some(2) :: Some(3) :: Nil
+
+    Option.traverse(somes)(x => x) should be (Option.sequence(somes))
+
+    Option.traverse(somes)(s => s.map(_ + 2)) should be
+    (Option.sequence(somes).map(_.map(_ + 2)))
+  }
 }

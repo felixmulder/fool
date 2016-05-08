@@ -32,12 +32,16 @@ sealed trait List[+A] extends Seq[A] { self =>
     }
 
   override def map[B](f: A => B): List[B] = Nil
+
+  override def foldRight[B](start: => B)(f: (A, => B) => B): B = start
 }
 
 object List {
   def apply[A](args: A*): List[A] =
     if (!args.isEmpty) args.head :: apply(args.tail: _*)
     else Nil
+
+  def empty[B]: List[B] = Nil
 }
 
 /**
@@ -51,14 +55,20 @@ sealed trait NonEmptyList[+A] extends List[A] with NonEmptySeq[A] { self =>
   }
 }
 
-final case class ::[A](hd: () => A, tl: () => List[A]) extends NonEmptyList[A] {
+final case class ::[+A](hd: () => A, tl: () => List[A]) extends NonEmptyList[A] {
   lazy val head = hd()
   lazy val tail = tl()
 
   override def toString: String = s"List($head, ?)"
 
   override def map[B](f: A => B): List[B] =
-    collection.::(() => f(head), () => tail.map(f))
+    foldRight(List.empty[B]) { (hd,tl) => collection.::(() => f(hd), () => tl) }
+
+  override def foldRight[B](start: => B)(f: (A, => B) => B): B =
+    this match {
+      case hd :: tl => f(hd(), tl().foldRight(start)(f))
+      case _ => start
+    }
 }
 
 object :: {
