@@ -74,4 +74,12 @@ class OptionSpec extends FlatSpec with Matchers {
     Option.traverse(somes)(s => s.map(_ + 2)) should be
     (Option.sequence(somes).map(_.map(_ + 2)))
   }
+
+
+  "A Some" should "return an Option[A] from its apply method" in {
+    import scala.reflect.ClassTag
+    def f[T](v: T)(implicit ev: ClassTag[T]) = ev.toString
+
+    f(Some(1)) should be (f(Option(1)))
+  }
 }

@@ -57,9 +57,19 @@ object Option {
     }
 }
 
-final case class Some[+A](a: A) extends Option[A] {
+final class Some[+A](a: A) extends Option[A] {
   override def get = a
   override def isEmpty = false
+
+  override def equals(other: Any) = other match {
+    case Some(x) => a == x
+    case _ => false
+  }
+}
+
+object Some {
+  def apply[A](a: A): Option[A] = new Some(a)
+  def unapply[A](opt: Some[A]) = opt
 }
 
 final case object None extends Option[Nothing] {
