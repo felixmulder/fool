@@ -39,6 +39,7 @@ package object fool {
   def ??? : Nothing = scala.Predef.???
 
   /** Exceptions */
+  type Throwable = java.lang.Throwable
   type NoSuchElementException = java.util.NoSuchElementException
 
   /** Proofs */

@@ -43,6 +43,8 @@ class OptionSpec extends FlatSpec with Matchers {
 
   it should "handle different cases of `flatten`" in {
     Some(Some(1)).flatten should be (Some(1))
+    Some(None).flatten should be (None)
+    None.flatten should be (None)
   }
 
 
@@ -101,5 +103,27 @@ class OptionSpec extends FlatSpec with Matchers {
       case None => // correct!
       case _ => fail("Didn't match Some/None")
     }
+  }
+
+  it should "have a working equals" in {
+    Some(1) should be (Some(1))
+    Some(1) should not be (Some(2))
+    None should not be (Some(1))
+    Some(1) should not be (1)
+  }
+
+  it should "have a working hashCode" in {
+    Some(2).hashCode should not be (Some(1).hashCode)
+  }
+
+  it should "have a working toString" in {
+    Some(1).toString should be ("Some(1)")
+  }
+
+  it should "be able to do .get from internal API package" in {
+    try {
+      None.get
+      fail("should have thrown exception on None.get")
+    } catch { case e: Throwable => }
   }
 }
