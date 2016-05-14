@@ -78,8 +78,28 @@ class OptionSpec extends FlatSpec with Matchers {
 
   "A Some" should "return an Option[A] from its apply method" in {
     import scala.reflect.ClassTag
-    def f[T](v: T)(implicit ev: ClassTag[T]) = ev.toString
+    def tag[T](v: T)(implicit ev: ClassTag[T]) = ev.toString
 
-    f(Some(1)) should be (f(Option(1)))
+    tag(Some(1)) should be (tag(Option(1)))
+  }
+
+  it should "be able to pattern match" in {
+    Some(1) match {
+      case None => fail("Shouldn't match None")
+      case Some(1) => // correct!
+      case _ => fail("Didn't match Some/None")
+    }
+
+    Option(1) match {
+      case None => fail("Shouldn't match None")
+      case Some(1) => // correct!
+      case _ => fail("Didn't match Some/None")
+    }
+
+    (None: Option[Int]) match {
+      case Some(1) => // correct!
+      case None => // correct!
+      case _ => fail("Didn't match Some/None")
+    }
   }
 }
