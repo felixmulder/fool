@@ -65,6 +65,9 @@ final class Some[+A](a: A) extends Option[A] {
     case Some(x) => a == x
     case _ => false
   }
+
+  override def hashCode = a.hashCode
+  override def toString = s"Some($a)"
 }
 
 object Some {
