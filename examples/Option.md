@@ -13,6 +13,16 @@ some.map(_ * 2)
 // res: Some(10)
 ```
 
+Another improvement to `Some` is that its apply method returns an `Option`, as such:
+
+```scala
+// stdlib:
+val opt = Some(1) // res: Some[Int] = Some(1)
+
+// fool:
+val opt = Some(1) // res: Option[Int] = Some(1)
+```
+
 The implementation also adds several object functions like:
 
 ```scala

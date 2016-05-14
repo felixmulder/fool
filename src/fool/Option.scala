@@ -41,7 +41,7 @@ sealed trait Option[+A] {
 
 object Option {
 
-  def apply[A](a: A): Option[A] = if (a != null) Some(a) else None
+  def apply[A](a: A): Option[A] = if (a != null) new Some(a) else None
 
   def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
     a flatMap (aa => b map (bb => f(aa, bb)))
@@ -68,8 +68,8 @@ final class Some[+A](a: A) extends Option[A] {
 }
 
 object Some {
-  def apply[A](a: A): Option[A] = new Some(a)
-  def unapply[A](opt: Some[A]) = opt
+  def apply[A](a: A): Option[A] = Option.apply(a)
+  def unapply[A](opt: Some[A])  = opt
 }
 
 final case object None extends Option[Nothing] {
