@@ -11,6 +11,8 @@
 package fool
 package collection
 
+import scala.annotation.tailrec
+
 /**
  * The `List` interface is the shared interface between a `NonEmptyList` and an
  * empty list `Nil`
@@ -31,21 +33,57 @@ sealed trait List[+A] { self =>
   @inline def applyOrElse[B >: A](index: Int)(default: => B): B =
     apply(index).getOrElse(default)
 
-  def equalMembers[B >: A](other: List[B]): Boolean
-
   def collect[B](pf: scala.PartialFunction[A, B]) =
     foldRight(List.empty[B])((elem, acc) => if (pf.isDefinedAt(elem)) (pf(elem) :: acc) else acc)
 
-  def filter(f: A => Boolean): List[A] =
-    foldRight(List.empty[A]){ (elem, acc) =>
+  @tailrec final def drop(nbr: Int): List[A] = this match {
+    case Nil => Nil
+    case list if nbr < 0 => list
+    case list @ (x :: xs) => if (nbr == 0) list else xs.drop(nbr - 1)
+  }
+
+  @tailrec final def dropWhile(p: A => Boolean): List[A] = this match {
+    case Nil => Nil
+    case list @ (x :: xs) => if (!p(x)) list else xs.dropWhile(p)
+  }
+
+  def equalMembers[B >: A](other: List[B]): Boolean
+
+  def find(p: A => Boolean): Option[A] =
+    this match {
+      case Nil => None
+      case x :: xs => if (p(x)) Some(x) else xs.find(p)
+    }
+
+  @inline def filter(f: A => Boolean): List[A] =
+    foldRight(List.empty[A]) { (elem, acc) =>
       if (f(elem)) collection.::(() => elem, () => acc)
       else acc
+    }
+
+  @inline def filterNot(f: A => Boolean): List[A] =
+    filter(a => !f(a))
+
+  @tailrec final def forall(f: A => Boolean): Boolean =
+    this match {
+      case Nil => true
+      case x :: xs => f(x) && xs.forall(f)
     }
 
   def map[B](f: A => B): List[B] =
     foldRight(List.empty[B]) { (hd,tl) => collection.::(() => f(hd), () => tl) }
 
-  def foldRight[B](start: => B)(f: (A, => B) => B): B
+  final def foldRight[B](start: => B)(f: (A, => B) => B): B =
+    this match {
+      case Nil => start
+      case hd :: tl => f(hd, tl.foldRight(start)(f))
+    }
+
+  @tailrec final def foldLeft[B](start: => B)(f: (=> B, A) => B): B =
+    this match {
+      case Nil => start
+      case hd :: tl => tl.foldLeft(f(start, hd))(f)
+    }
 
   def flatMap[B](f: A => List[B]): List[B] =
     foldRight(List.empty[B])((elem, acc) => f(elem) ++ acc)
@@ -99,12 +137,6 @@ final case class ::[+A] private (val hd: () => A, val tl: () => List[A]) extends
   def ++[B >: A](other: => List[B]): List[B] =
     collection.::(() => head, () => { tail ++ other })
 
-  def foldRight[B](start: => B)(f: (A, => B) => B): B =
-    this match {
-      case hd :: tl => f(hd(), tl().foldRight(start)(f))
-      case _ => start
-    }
-
   override def toString: String = s"List($head, ?)"
 }
 
@@ -119,8 +151,6 @@ final case object Nil extends List[Nothing] {
   def isEmpty = true
 
   def ++[B >: Nothing](other: => List[B]): List[B] = other
-
-  def foldRight[B](start: => B)(f: (Nothing, => B) => B): B = start
 
   def equalMembers[B >: Nothing](other: List[B]) = other eq Nil
 

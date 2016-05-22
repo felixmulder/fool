@@ -79,6 +79,22 @@ class ListSpec extends FlatSpec with Matchers {
     list.applyOrElse(3)(-1) should be (-1)
   }
 
+  it should "be able to use `drop` correctly" in {
+    val xs = List(1, 2, 3, 4, 5)
+
+    xs.drop(3)  should be (List(4, 5))
+    xs.drop(-1) should be (List(1, 2, 3, 4, 5))
+    xs.drop(5)  should be (Nil)
+  }
+
+  it should "be able to use `dropWhile` correctly" in {
+    val xs = List(1, 2, 3, 4, 5)
+
+    xs.dropWhile(_ > 3)     should be (xs)
+    xs.dropWhile(_ < 4)     should be (List(4, 5))
+    xs.dropWhile(_ => true) should be (Nil)
+  }
+
   it should "handle `map` correctly" in {
     val list       = 1 :: 2 :: 3 :: 4 :: 5  :: 6  :: Nil
     val listTimes2 = 2 :: 4 :: 6 :: 8 :: 10 :: 12 :: Nil
@@ -108,12 +124,22 @@ class ListSpec extends FlatSpec with Matchers {
     index should be (3)
   }
 
-  it should "be able to fold values" in {
+  it should "be able to `foldRight` on values" in {
     val list = 1 :: 2 :: 3 :: 4 :: Nil
 
     list.foldRight(0)(_ + _) should be (10)
 
     (Nil: List[Int]).foldRight(0)(_ * _) should be (0)
+
+    list.foldRight(List.empty[Int])((elem, acc) => elem :: acc) should be (List(1, 2, 3, 4))
+  }
+
+  it should "be able to `foldLeft` on values" in {
+    val list = 1 :: 2 :: 3 :: 4 :: Nil
+
+    list.foldLeft(0)(_ + _)             should be (10)
+    List.empty[Int].foldLeft(0)(_ * _)  should be (0)
+    list.foldLeft(List.empty[Int])((acc, elem) => elem :: acc) should be (List(4, 3, 2, 1))
   }
 
   it should "be able to append another list" in {
@@ -185,6 +211,11 @@ class ListSpec extends FlatSpec with Matchers {
     i should be (3)
   }
 
+  it should "consider `filterNot` the opposite of `filter`" in {
+    val xs = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    xs.filterNot(_ > 5) should be (List(1, 2, 3, 4, 5))
+  }
+
   it should "be able to collect all" in {
     val xs = List(1, 2, 3)
     xs.collect { case x => x } should be (List(1, 2, 3))
@@ -193,5 +224,51 @@ class ListSpec extends FlatSpec with Matchers {
   it should "not collect elements larger than predicate" in {
     val xs = List(1, 2, 3, 4, 5)
     xs.collect { case x if x > 3 => x } should be (List(4, 5))
+  }
+
+  it should "be able to correctly handle `find`" in {
+    val xs = List(1, 2, 3, 4)
+
+    xs.find(_ == 2) should be (Some(2))
+    xs.find(_ == 5) should be (None)
+  }
+
+  it should "when finding early elem, not evaluate full list" in {
+    var i = 0
+    def incr = { () => i += 1; i }
+    val list: List[Int] =
+      collection.::(
+        incr,
+        () => collection.::(
+          incr,
+            () => collection.::(
+              incr,
+                () => Nil)))
+
+    list.find(_ == 1) should be (Some(1))
+    i should be (1)
+  }
+
+  it should "handle `forall` correctly" in {
+    val xs = List(1, 2, 3, 4, 5)
+
+    xs.forall(_ > 0) should be (true)
+    xs.forall(_ < 0) should be (false)
+  }
+
+  it should "not evaluate full list on `forall`" in {
+    var i = 0
+    def incr = { () => i += 1; i }
+    val list: List[Int] =
+      collection.::(
+        incr,
+        () => collection.::(
+          incr,
+            () => collection.::(
+              incr,
+                () => Nil)))
+
+    list.forall(_ < 0) should be (false)
+    i should be (1) // Should only evaluate head
   }
 }
