@@ -115,7 +115,7 @@ sealed trait NonEmptyList[+A] extends List[A] { self =>
   def head: A
   def tail: List[A]
 
-  override def apply(index: Int): Option[A] =
+  def apply(index: Int): Option[A] =
     if (index > 0) (tail: @switch) match {
       case Nil => None
       case xs: NonEmptyList[_] => xs.apply(index - 1)
@@ -123,7 +123,7 @@ sealed trait NonEmptyList[+A] extends List[A] { self =>
     else if (index < 0) None
     else Some(head)
 
-  override def equalMembers[B >: A](other: List[B]): Boolean = (self, other) match {
+  def equalMembers[B >: A](other: List[B]): Boolean = (self, other) match {
     case (xs: NonEmptyList[_], ys: NonEmptyList[_]) =>
       (xs.head == ys.head) && (xs.tail equalMembers ys.tail)
     case _ => false
