@@ -53,6 +53,15 @@ class ListSpec extends FlatSpec with Matchers {
       case 0 :: 1 :: 2 :: Nil => // success!
       case _ => fail("Match error")
     }
+
+    List(1, 2, 3) match {
+      case List(x, y, z) =>
+        assert(x == 1 && y == 2 && z == 3, "Incorrect unapply in patternmatch")
+    }
+
+    List(1) match {
+      case List(1) => // success!
+    }
   }
 
   it should "behave correctly when using List(...).apply(i)" in {
@@ -270,5 +279,10 @@ class ListSpec extends FlatSpec with Matchers {
 
     list.forall(_ < 0) should be (false)
     i should be (1) // Should only evaluate head
+  }
+
+  it should "be able to create a list from scala List" in {
+    val sxs = scala.collection.immutable.List(1,2,3)
+    List.fromScalaList(sxs) should be (List(1,2,3))
   }
 }

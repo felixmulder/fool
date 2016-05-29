@@ -12,6 +12,7 @@ package fool
 package collection
 
 import scala.annotation.tailrec
+import scala.collection.immutable.{ List => StdList, Nil => StdNil }
 
 /**
  * The `List` interface is the shared interface between a `NonEmptyList` and an
@@ -96,6 +97,19 @@ sealed trait List[+A] { self =>
       case (ss: List[_], xs: List[_]) => ss equalMembers xs
       case _ => false
     }
+
+  final def toScalaList: StdList[A] = {
+    var xs: List[A]     = this
+    var sxs: StdList[A] = StdNil
+
+    while (!xs.isEmpty) {
+      val head = xs.asInstanceOf[NonEmptyList[A]].head
+      xs = xs.asInstanceOf[NonEmptyList[A]].tail
+      sxs = sxs ++ StdList(head)
+    }
+
+    sxs
+  }
 }
 
 object List {
@@ -104,6 +118,13 @@ object List {
     else Nil
 
   def empty[B]: List[B] = Nil
+
+  def unapplySeq[A](xs: List[A]) = Option(xs.toScalaList)
+
+  def fromScalaList[A](xs: StdList[A]): List[A] = xs match {
+    case StdList(x, xs @ _*) => collection.::(() => x, () => fromScalaList(xs.toList))
+    case StdNil =>  Nil
+  }
 }
 
 /**
