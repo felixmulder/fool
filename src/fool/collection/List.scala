@@ -72,7 +72,7 @@ sealed trait List[+A] { self =>
     }
 
   def map[B](f: A => B): List[B] =
-    foldRight(List.empty[B]) { (hd,tl) => collection.::(() => f(hd), () => tl) }
+   foldRight(List.empty[B]) { (hd,tl) => collection.::(() => f(hd), () => tl) }
 
   final def foldRight[B](start: => B)(f: (A, => B) => B): B =
     this match {

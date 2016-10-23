@@ -20,6 +20,7 @@ package object fool {
 
   /** Default imports */
   type List[+A] = fool.collection.List[A]
+  val  List     = fool.collection.List
   val  Nil      = fool.collection.Nil
   type ::[+A]   = fool.collection.::[A]
   val  ::       = fool.collection.::
