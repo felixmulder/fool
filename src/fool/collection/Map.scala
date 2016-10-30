@@ -74,6 +74,9 @@ final case class NonEmptyMap[K: Ordering,+V] private (
 
   lazy val size =
     1 + left.size + right.size
+
+  override def toString =
+    s"Map($key -> $value, ...)"
 }
 
 object Map {
