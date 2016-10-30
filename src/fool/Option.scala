@@ -10,6 +10,8 @@
 
 package fool
 
+import scala.{ Option => StdOption }
+
 /**
  * Implements the Option interface equivalent to `scala.Option` in every way
  * except for the `get` method. This method is `protected[fool]` and as such,
@@ -55,6 +57,10 @@ object Option {
         collection.::(() => h, () => t)
       }
     }
+
+  def fromScalaOption[A](opt: StdOption[A]): Option[A] =
+    if (opt.isDefined) Option.apply(opt.get)
+    else None
 }
 
 final class Some[+A](a: A) extends Option[A] {
