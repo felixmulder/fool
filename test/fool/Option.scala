@@ -120,6 +120,11 @@ class OptionSpec extends FlatSpec with Matchers {
     Some(1).toString should be ("Some(1)")
   }
 
+  it should "correctly convert a scala.Option" in {
+    Option.fromScalaOption(scala.Option(1)) shouldBe (Some(1))
+    Option.fromScalaOption(scala.Option(null)) shouldBe (None)
+  }
+
   it should "be able to do .get from internal API package" in {
     try {
       None.get
