@@ -20,6 +20,7 @@ being evaluated, e.g: `List(1, ?)`.
 
 Examples
 --------
+* [Map](examples/Map.md)
 * [Option](examples/Option.md)
 * [List](examples/List.md)
 

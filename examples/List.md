@@ -1,6 +1,5 @@
 List
 ====
-
 In the style of lists has been augmented somewhat. There is now a distinction
 between lists that are empty, and `NonEmptyLists[+A]`.
 
