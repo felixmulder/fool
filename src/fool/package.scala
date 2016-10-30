@@ -33,6 +33,9 @@ package object fool {
   /** Identity function returns itself */
   def identity[A]: A => A = x => x
 
+  /** When using viewbounds this will procure an implicit from the compiler */
+  @inline def implicitly[T](implicit e: T) = e
+
   /* Annotations */
   type inline = scala.inline
   type switch = scala.annotation.switch
@@ -48,4 +51,10 @@ package object fool {
   sealed abstract class <:<[-From, +To] extends (From => To) with java.io.Serializable
   private[this] final val singleton_<:< = new <:<[Any,Any] { def apply(x: Any): Any = x }
   implicit def $conforms[A]: A <:< A = singleton_<:<.asInstanceOf[A <:< A]
+
+
+  /** Any ops */
+  implicit class FoolAny[A](val a: A) extends AnyVal {
+    def ->[B](b: B): (A,B) = (a, b)
+  }
 }
