@@ -27,5 +27,23 @@ Examples
 
 Ongoing
 -------
-* Implement `View` and `Iterable` (see branch:
-  [topic/views](https://github.com/felixmulder/fool/tree/topic/views))
+Considering whether to implement the following structure:
+
+* Methods added by type classes
+* A choice between different implementations, e.g for interop with cats:
+
+    ```scala
+    import fool.cats._
+    ```
+
+    or for an implementation utilizing views:
+
+    ```scala
+    import fool.views._
+    ```
+
+    or for the default "reasonably lazy" implementation:
+
+    ```scala
+    import fool.defaults._
+    ```
